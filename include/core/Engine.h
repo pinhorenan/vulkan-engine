@@ -4,29 +4,33 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <memory>
 
-namespace vke { // vke = Vulkan Engine, por exemplo
+namespace vke {
+
+    class Device; // Forward declaration
 
     class Engine {
     public:
-        Engine(const std::string& windowTitle, int width, int height);
+        Engine(std::string windowTitle, int width, int height);
         ~Engine();
 
         // Proíbe cópia
         Engine(const Engine&) = delete;
         Engine& operator=(const Engine&) = delete;
 
-        void run();
+        void run() const;
 
     private:
         void initWindow();
         void initVulkan();
-        void mainLoop();
+        void mainLoop() const;
         void cleanup();
 
-        // Funções Vulkan extras se precisar
+        // Funções Vulkan extras
         void createInstance();
-        bool checkValidationLayerSupport();
+        void createSurface();
+        static bool checkValidationLayerSupport();
 
     private:
         std::string m_windowTitle;
@@ -35,10 +39,14 @@ namespace vke { // vke = Vulkan Engine, por exemplo
         GLFWwindow* m_window = nullptr;
 
         VkInstance m_instance = VK_NULL_HANDLE;
-        // Caso precise de debug messenger
+        VkSurfaceKHR m_surface = VK_NULL_HANDLE;
+
 #ifdef _DEBUG
         VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
 #endif
+
+        // Gerenciador do device
+        std::unique_ptr<Device> m_device;
     };
 
 } // namespace vke

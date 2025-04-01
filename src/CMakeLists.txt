@@ -1,12 +1,8 @@
-# Para evitar conflitos, podemos manter a política de versionamento do CMake acima de 3.20
-cmake_minimum_required(VERSION 3.20)
-
-# Cria uma biblioteca estática para o motor
 add_library(vulkan_engine_lib
         core/Engine.cpp
-        # gfx/*.cpp
-        # sim/*.cpp
-        # etc.
+        core/Device.cpp
+        core/Globals.cpp
+        core/SwapChain.cpp
 )
 
 target_include_directories(vulkan_engine_lib
