@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstring>
 #include <iostream>
+#include <core/SwapChain.h>
 
 namespace vke {
 
@@ -105,14 +106,36 @@ namespace vke {
         createSurface();
         // Cria o device a partir da instância e da surface criadas
         m_device = std::make_unique<Device>(m_instance, m_surface);
+
+        // Cria a swapchain
+        m_swapChain = std::make_unique<SwapChain>(
+            m_device->device(),
+            m_device->physicalDevice(),
+            m_surface,
+            m_width,
+            m_height,
+            0, // Substitua por indices.graphicsFamily.value() quando disponível
+            0  // Substitua por indices.presentFamily.value() quando disponível
+        );
+
+        // Cria o renderer
+        m_renderer = std::make_unique<Renderer>(
+            m_device->device(),
+            *m_swapChain,
+            m_device->graphicsQueue(),
+            m_device->presentQueue(),
+            0 // Substitua por indices.graphicsFamily.value() se tiver essa informação
+        );
     }
 
     void Engine::mainLoop() const {
         while (!glfwWindowShouldClose(m_window)) {
             glfwPollEvents();
-            // Aqui, futuramente, você pode chamar m_device->drawFrame() ou similar para renderizar
+            // Chama o drawFrame do renderer
+            m_renderer->drawFrame();
         }
     }
+
 
     void Engine::cleanup() {
         // Destrói o device antes de destruir a surface e a instância

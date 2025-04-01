@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <memory>
+#include "core/Swapchain.h"
+#include "gfx/Renderer.h"
 
 namespace vke {
 
@@ -47,6 +49,10 @@ namespace vke {
 
         // Gerenciador do device
         std::unique_ptr<Device> m_device;
+
+        // Novos membros para a swapchain e o renderer
+        std::unique_ptr<SwapChain> m_swapChain;
+        std::unique_ptr<Renderer> m_renderer;
     };
 
 } // namespace vke

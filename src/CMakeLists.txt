@@ -3,6 +3,8 @@ add_library(vulkan_engine_lib
         core/Device.cpp
         core/Globals.cpp
         core/SwapChain.cpp
+        gfx/Renderer.cpp
+        gfx/GraphicsPipeline.cpp
 )
 
 target_include_directories(vulkan_engine_lib
@@ -16,7 +18,7 @@ target_link_libraries(vulkan_engine_lib
 )
 
 add_executable(vulkan_engine_app
-        core/main.cpp
+        main.cpp
 )
 
 target_link_libraries(vulkan_engine_app
