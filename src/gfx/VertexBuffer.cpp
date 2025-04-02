@@ -21,3 +21,16 @@ void VertexBuffer::create(const std::vector<Vertex>& vertices) {
   // Upload the vertex data to the buffer
   m_buffer.uploadData(vertices.data(), size);
 }
+
+void VertexBuffer::bind(VkCommandBuffer commandBuffer) const {
+  VkBuffer buffers[] = { m_buffer.getBuffer() };
+  VkDeviceSize offsets[] = { 0 };
+  vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
+}
+
+void VertexBuffer::destroy() {
+  m_buffer.destroy();
+  m_vertexCount = 0;
+}
+
+} // namespace vke

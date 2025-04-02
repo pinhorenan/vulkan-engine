@@ -1,25 +1,44 @@
 #include "gfx/Renderer.h"
 #include "gfx/GraphicsPipeline.h"
+#include "gfx/Model.h"
+#include "gfx/Vertex.h"
 
 #include <array>
+#include <vector>
 
 Renderer::Renderer(
     VkDevice device,
+    VkPhysicalDevice physicalDevice,
     const SwapChain& swapChain,
     VkQueue graphicsQueue,
     VkQueue presentQueue,
     uint32_t graphicsQueueFamilyIndex
 )
     : m_device(device),
+      m_physicalDevice(physicalDevice),
       m_swapChain(swapChain),
       m_graphicsQueue(graphicsQueue),
       m_presentQueue(presentQueue),
       m_graphicsQueueFamilyIndex(graphicsQueueFamilyIndex)
 {
+    // Creates a render pass,
     createRenderPass();
     createFramebuffers();
     createCommandPool();
+
+    // Creates a model and a graphics pipeline
     m_graphicsPipeline = std::make_unique<vke::GraphicsPipeline>(m_device, m_renderPass, m_swapChain.getExtent());
+
+    //
+    m_model = std::make_unique<vke::Model>(m_device, m_physicalDevice);
+    std::vector<vke::Vertex> triangleVertices = {
+        { { 0.0f,  -0.5f }, { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f,   0.5f }, { 0.0f, 1.0f, 0.0f } },
+        { { -0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f } }
+    };
+    m_model->addMesh(triangleVertices);
+
+    // Create command buffers and synchronization objects
     createCommandBuffers();
     createSyncObjects();
 }
@@ -180,7 +199,7 @@ void Renderer::createCommandBuffers() {
         vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->getPipeline());
 
         // Para teste, desenha um triângulo simples (3 vértices, 1 instância)
-        vkCmdDraw(m_commandBuffers[i], 3, 1, 0, 0);
+        m_model->recordDrawCommands(m_commandBuffers[i]);
 
         vkCmdEndRenderPass(m_commandBuffers[i]);
 

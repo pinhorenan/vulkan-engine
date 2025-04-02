@@ -21,10 +21,10 @@ public:
     ~GraphicsPipeline();
 
     /// Retorna o pipeline gráfico criado
-    VkPipeline getPipeline() const { return m_graphicsPipeline; }
+    [[nodiscard]] VkPipeline getPipeline() const { return m_graphicsPipeline; }
 
     /// Retorna o pipeline layout
-    VkPipelineLayout getPipelineLayout() const { return m_pipelineLayout; }
+    [[nodiscard]] VkPipelineLayout getPipelineLayout() const { return m_pipelineLayout; }
 
 private:
     /// Cria o pipeline gráfico (inclui criação dos módulos de shader, layout e pipeline propriamente dito)

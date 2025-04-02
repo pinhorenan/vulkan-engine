@@ -9,7 +9,7 @@ Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice)
 
 Buffer::~Buffer() { destroy(); }
 
-void Buffer:create(VkDevice size, VkBufferUsageFlags usage, VkMemoryPropertyFlags, properties) {
+void Buffer::create(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties) {
   // Creates the buffer
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -18,7 +18,7 @@ void Buffer:create(VkDevice size, VkBufferUsageFlags usage, VkMemoryPropertyFlag
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &m_buffer) != VK_SUCCESS) {
-      throw std::runtime_ERROR("Failed to create buffer!");
+      throw std::runtime_error("Failed to create buffer!");
     }
 
     // Allocates memory for the buffer
@@ -30,7 +30,7 @@ void Buffer:create(VkDevice size, VkBufferUsageFlags usage, VkMemoryPropertyFlag
     allocInfo.allocationSize              = memRequirements.size;
     allocInfo.memoryTypeIndex             = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemoru(m_device, &allocInfo, nullptr, &m_memory) != VK_SUCCESS) {
+    if (vkAllocateMemory(m_device, &allocInfo, nullptr, &m_memory) != VK_SUCCESS) {
         throw std::runtime_error("Failed to allocate buffer memory!");
     }
 
@@ -38,7 +38,7 @@ void Buffer:create(VkDevice size, VkBufferUsageFlags usage, VkMemoryPropertyFlag
     vkBindBufferMemory(m_device, m_buffer, m_memory, 0);
 }
 
-void Buffer:uploadData(const void* srcData, vkDeviceSize size) {
+void Buffer::uploadData(const void* srcData, VkDeviceSize size) {
   void* dstData;
   if (vkMapMemory(m_device, m_memory, 0, size, 0, &dstData) != VK_SUCCESS) {
     throw std::runtime_error("Failed to map buffer memory!");
@@ -68,4 +68,6 @@ uint32_t Buffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags prope
   }
 
   throw std::runtime_error("Failed to find suitable memory type!");
+}
+
 }

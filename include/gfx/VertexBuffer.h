@@ -16,7 +16,7 @@ namespace vke {
         void bind(VkCommandBuffer commandBuffer) const;
         void destroy();
 
-        size_t getVertexCount() const { return m_vertexCount; }
+        [[nodiscard]] size_t getVertexCount() const { return m_vertexCount; }
 
     private:
         Buffer m_buffer;

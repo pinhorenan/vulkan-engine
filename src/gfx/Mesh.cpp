@@ -16,9 +16,10 @@ void Mesh::load(const std::vector<Vertex>& vertices) {
 
 void Mesh::recordDrawCommands(VkCommandBuffer commandBuffer) const {
   m_vertexBuffer.bind(commandBuffer);
-  vkCmndDraw(commandBuffer, static_cast<uint32_t>(m_vertexBuffer.getVertexCount()), 1, 0, 0);
+  vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_vertexBuffer.getVertexCount()), 1, 0, 0);
 
-  void Mesh::destroy() {
-    m_vertexBuffer.destroy();
-  }
 }
+
+void Mesh::destroy() { m_vertexBuffer.destroy();}
+
+} // namespace vke

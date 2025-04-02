@@ -12,6 +12,7 @@ class Renderer {
 public:
     Renderer(
         VkDevice device,
+        VkPhysicalDevice physicalDevice,
         const SwapChain& swapChain,
         VkQueue graphicsQueue,
         VkQueue presentQueue,
@@ -29,6 +30,7 @@ public:
 
 private:
     VkDevice m_device;
+    VkPhysicalDevice m_physicalDevice;
     const SwapChain& m_swapChain;
     VkQueue m_graphicsQueue;
     VkQueue m_presentQueue;

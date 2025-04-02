@@ -21,8 +21,8 @@ namespace vke {
         // Copia dados do host (CPU) para o buffer (caso memória visível)
         void uploadData(const void* srcData, VkDeviceSize size);
 
-        VkBuffer getBuffer() const { return m_buffer; }
-        VkDeviceMemory getMemory() const { return m_memory; }
+        [[nodiscard]] VkBuffer getBuffer() const { return m_buffer; }
+        [[nodiscard]] VkDeviceMemory getMemory() const { return m_memory; }
 
     private:
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
