@@ -1,4 +1,6 @@
 #include "gfx/Renderer.h"
+#include "gfx/GraphicsPipeline.h"
+
 #include <array>
 
 Renderer::Renderer(
@@ -14,11 +16,10 @@ Renderer::Renderer(
       m_presentQueue(presentQueue),
       m_graphicsQueueFamilyIndex(graphicsQueueFamilyIndex)
 {
-    // Geralmente, você chama os métodos de criação
-    // diretamente no construtor (ou pode chamar manualmente fora)
     createRenderPass();
     createFramebuffers();
     createCommandPool();
+    m_graphicsPipeline = std::make_unique<vke::GraphicsPipeline>(m_device, m_renderPass, m_swapChain.getExtent());
     createCommandBuffers();
     createSyncObjects();
 }
@@ -90,7 +91,7 @@ void Renderer::createRenderPass() {
     renderPassInfo.pDependencies = &dependency;
 
     if (vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
-        throw std::runtime_error("Falha ao criar render pass!");
+        throw std::runtime_error("Failed to create render pass!");
     }
 }
 
@@ -114,7 +115,7 @@ void Renderer::createFramebuffers() {
         framebufferInfo.layers = 1;
 
         if (vkCreateFramebuffer(m_device, &framebufferInfo, nullptr, &m_framebuffers[i]) != VK_SUCCESS) {
-            throw std::runtime_error("Falha ao criar framebuffer!");
+            throw std::runtime_error("Failed to create framebuffer!");
         }
     }
 }
@@ -130,7 +131,7 @@ void Renderer::createCommandPool() {
     poolInfo.queueFamilyIndex = m_graphicsQueueFamilyIndex;
 
     if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
-        throw std::runtime_error("Falha ao criar command pool!");
+        throw std::runtime_error("Failed to create command pool!");
     }
 }
 
@@ -175,11 +176,11 @@ void Renderer::createCommandBuffers() {
 
         vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        // ---------------------------------------------------
-        // AQUI vão seus comandos de desenho:
-        // - vkCmdBindPipeline
-        // - vkCmdDraw / vkCmdDrawIndexed
-        // ---------------------------------------------------
+        // Vincula o pipeline gráfico
+        vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->getPipeline());
+
+        // Para teste, desenha um triângulo simples (3 vértices, 1 instância)
+        vkCmdDraw(m_commandBuffers[i], 3, 1, 0, 0);
 
         vkCmdEndRenderPass(m_commandBuffers[i]);
 
@@ -212,7 +213,7 @@ void Renderer::createSyncObjects() {
 // Realiza o desenho de um frame (adquire imagem, submete
 // command buffer, apresenta na tela)
 // ------------------------------------------------------
-void Renderer::drawFrame() {
+void Renderer::drawFrame() const {
     // Espera o frame anterior terminar
     vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(m_device, 1, &m_inFlightFence);
