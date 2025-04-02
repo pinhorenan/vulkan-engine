@@ -4,7 +4,6 @@
 #include <set>
 #include <iostream>
 #include <vector>
-#include <cstring>  // Para strcmp, se necessário
 
 namespace vke {
 

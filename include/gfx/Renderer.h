@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "core/SwapChain.h"
-#include "gfx/GraphicsPipeline.h"
+#include "GraphicsPipeline.h"
 
 class Renderer {
 public:

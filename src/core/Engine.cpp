@@ -107,25 +107,25 @@ namespace vke {
         // Cria o device a partir da instância e da surface criadas
         m_device = std::make_unique<Device>(m_instance, m_surface);
 
-        // Cria a swapchain
+        auto indices = m_device->findQueueFamilies(m_device->physicalDevice());
         m_swapChain = std::make_unique<SwapChain>(
             m_device->device(),
             m_device->physicalDevice(),
             m_surface,
             m_width,
             m_height,
-            0, // Substitua por indices.graphicsFamily.value() quando disponível
-            0  // Substitua por indices.presentFamily.value() quando disponível
+            indices.graphicsFamily.value(),
+            indices.presentFamily.value()
         );
 
-        // Cria o renderer
         m_renderer = std::make_unique<Renderer>(
             m_device->device(),
             *m_swapChain,
             m_device->graphicsQueue(),
             m_device->presentQueue(),
-            0 // Substitua por indices.graphicsFamily.value() se tiver essa informação
+            indices.graphicsFamily.value()
         );
+
     }
 
     void Engine::mainLoop() const {
